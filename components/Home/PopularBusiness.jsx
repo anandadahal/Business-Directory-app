@@ -1,23 +1,24 @@
-import { View, Text, FlatList, Image } from "react-native";
+import { View, Text, FlatList } from "react-native";
 import React, { useState, useEffect } from "react";
-import { Colors } from "../../constants/Colors";
+import { Colors } from '../../constants/Colors';
 import { collection, query, getDocs } from "firebase/firestore";
 import { db } from "../../Configs/FirebaseConfig";
-import { useRouter } from "expo-router";
-import CategoryItems from "../../components/Home/CategoryItems";
-export default function Category() {
-  const [categoryList, setCategoryList] = useState([]);
-  const router = useRouter();
+import PopularBusinessCard from "./PopularBusinessCard";
+
+export default function BusinessList() {
+  const [BusinessList, setBusinessList] = useState([]);
+
   useEffect(() => {
-    GetCategoryList();
+    GetBusinessList();
   }, []);
-  const GetCategoryList = async () => {
-    setCategoryList([]);
-    const q = query(collection(db, "Category"));
+
+  const GetBusinessList = async () => {
+    setBusinessList([]);
+    const q = query(collection(db, "BusinessList"));
     const querySnapshot = await getDocs(q);
     querySnapshot.forEach((doc) => {
       console.log(doc.data());
-      setCategoryList((prev) => [...prev, doc.data()]);
+      setBusinessList((prev) => [...prev, doc.data()]);
     });
   };
 
@@ -35,12 +36,11 @@ export default function Category() {
         <Text
           style={{
             paddingLeft: 10,
-
             fontFamily: "outfit-bold",
             fontSize: 20,
           }}
         >
-          Category
+          Popular Business
         </Text>
         <Text
           style={{
@@ -50,20 +50,18 @@ export default function Category() {
             color: Colors.PRIMARY,
           }}
         >
-
           View All
         </Text>
       </View>
+
       <FlatList
         horizontal={true}
         showsHorizontalScrollIndicator={false}
-        data={categoryList}
-        renderItem={({ item, index }) => (
-          <CategoryItems category={item} key={index} 
-          onCategoryPress={(category) => router.push(`Businesslist/`+item.name)}
-       
-          />
+        data={BusinessList}
+        renderItem={({ item }) => (
+          <PopularBusinessCard business={item} />
         )}
+        keyExtractor={(item, index) => index.toString()}
       />
     </View>
   );
