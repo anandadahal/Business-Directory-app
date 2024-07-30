@@ -24,9 +24,10 @@ export default function Businesslist() {
             const querySnapshot = await getDocs(q);
             const businessListData = [];
             querySnapshot.forEach((doc) => {
-                businessListData.push(doc.data());
+                // businessListData.push(doc.data());
+                setBusinessList((prev) => [...prev, {id: doc?.id, ...doc.data()}]);
             });
-            setBusinessList(businessListData);
+            // setBusinessList(businessListData);
         } catch (error) {
             console.error("Error fetching business list: ", error);
         } finally {
